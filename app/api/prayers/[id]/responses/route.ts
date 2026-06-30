@@ -58,8 +58,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!firstName?.trim()) return NextResponse.json({ error: "First name is required." }, { status: 400 });
   if (!["comment", "link"].includes(type)) return NextResponse.json({ error: "Invalid type." }, { status: 400 });
   if (!content?.trim()) return NextResponse.json({ error: "Content is required." }, { status: 400 });
-  if (type === "comment" && content.trim().length > 1000)
-    return NextResponse.json({ error: "Comment too long (max 1000 characters)." }, { status: 400 });
+  if (type === "comment" && content.trim().length > 5000)
+    return NextResponse.json({ error: "Comment too long (max 5000 characters)." }, { status: 400 });
 
   let platform: string | null = null;
   if (type === "link") {

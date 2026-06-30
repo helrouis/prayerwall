@@ -71,12 +71,13 @@ export default function SubmitPage() {
           <input
             type="text"
             required
-            maxLength={100}
+            maxLength={200}
             placeholder="A short title for your prayer"
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
             className="w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400"
           />
+          <p className={`text-xs mt-1 text-right ${form.title.length > 180 ? "text-amber-500" : "text-navy-700/40"}`}>{form.title.length}/200</p>
         </div>
 
         {/* Body */}
@@ -85,13 +86,13 @@ export default function SubmitPage() {
           <textarea
             required
             rows={5}
-            maxLength={1500}
+            maxLength={5000}
             placeholder="Share as much or as little as you'd like…"
             value={form.body}
             onChange={(e) => setForm({ ...form, body: e.target.value })}
             className="w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400 resize-none"
           />
-          <p className="text-xs text-navy-700/40 mt-1 text-right">{form.body.length}/1500</p>
+          <p className={`text-xs mt-1 text-right ${form.body.length > 4500 ? "text-amber-500" : "text-navy-700/40"}`}>{form.body.length}/5000</p>
         </div>
 
         {/* Category */}
@@ -113,11 +114,13 @@ export default function SubmitPage() {
           <input
             type="text"
             required
+            maxLength={100}
             placeholder="First name"
             value={form.firstName}
             onChange={(e) => setForm({ ...form, firstName: e.target.value })}
             className="w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400"
           />
+          <p className={`text-xs mt-1 text-right ${form.firstName.length > 80 ? "text-amber-500" : "text-navy-700/40"}`}>{form.firstName.length}/100</p>
           <label className="flex items-center gap-2.5 mt-2.5 cursor-pointer">
             <input
               type="checkbox"

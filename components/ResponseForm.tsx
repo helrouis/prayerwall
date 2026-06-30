@@ -114,13 +114,17 @@ export default function ResponseForm({ prayerId }: { prayerId: string }) {
       </div>
 
       {/* First name */}
-      <input
-        type="text"
-        placeholder="Your first name"
-        value={firstName}
-        onChange={(e) => setFirstName(e.target.value)}
-        className="w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400"
-      />
+      <div>
+        <input
+          type="text"
+          placeholder="Your first name"
+          maxLength={100}
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          className="w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400"
+        />
+        <p className={`text-xs mt-1 text-right ${firstName.length > 80 ? "text-amber-500" : "text-navy-700/40"}`}>{firstName.length}/100</p>
+      </div>
 
       {/* Content */}
       {type === "comment" ? (
@@ -130,10 +134,10 @@ export default function ResponseForm({ prayerId }: { prayerId: string }) {
             placeholder="Write a prayer or word of encouragement…"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            maxLength={1000}
+            maxLength={5000}
             className="w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400 resize-none"
           />
-          <p className="text-xs text-navy-700/40 mt-1 text-right">{content.length}/1000</p>
+          <p className={`text-xs mt-1 text-right ${content.length > 4500 ? "text-amber-500" : "text-navy-700/40"}`}>{content.length}/5000</p>
         </div>
       ) : (
         <div>
