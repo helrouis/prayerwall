@@ -31,8 +31,6 @@ export default function AdminPage() {
   const [tab, setTab] = useState<"pending" | "approved" | "rejected" | "testimonies">("pending");
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState("");
-  const [answeringId, setAnsweringId] = useState<string | null>(null);
-  const [answeredStory, setAnsweredStory] = useState("");
   const [forceAnonIds, setForceAnonIds] = useState<Set<string>>(new Set());
   const [mode, setMode] = useState<"prayers" | "responses">("prayers");
   const [responses, setResponses] = useState<{ id: string; prayerTitle: string; firstName: string; type: string; content: string; platform?: string; createdAt: string }[]>([]);
@@ -109,15 +107,12 @@ export default function AdminPage() {
     fetchPrayers(tab);
   };
 
-  const markAnswered = async (id: string, existingStory?: string) => {
-    const story = existingStory !== undefined ? existingStory : (answeredStory.trim() || null);
+  const markAnswered = async (id: string, story?: string) => {
     await fetch(`/api/admin/prayers`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ id, isAnswered: true, answeredStory: story }),
+      body: JSON.stringify({ id, isAnswered: true, answeredStory: story ?? null }),
     });
-    setAnsweringId(null);
-    setAnsweredStory("");
     fetchPrayers(tab);
   };
 
@@ -284,29 +279,16 @@ export default function AdminPage() {
                     <button onClick={() => updateStatus(p.id, "rejected")} className="text-xs px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-full transition-colors">Reject</button>
                   </>
                 )}
-                {tab === "approved" && !p.isAnswered && answeringId !== p.id && (
-                  <button onClick={() => setAnsweringId(p.id)} className="text-xs px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-full transition-colors">Mark Answered</button>
-                )}
-                {tab === "approved" && !p.isAnswered && answeringId === p.id && (
-                  <div className="w-full mt-3 space-y-2">
-                    <textarea
-                      rows={3}
-                      placeholder="Share the testimony (optional)…"
-                      value={answeredStory}
-                      onChange={(e) => setAnsweredStory(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400 resize-none"
-                    />
-                    <div className="flex gap-2">
-                      <button onClick={() => markAnswered(p.id)} className="text-xs px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full transition-colors">Confirm</button>
-                      <button onClick={() => { setAnsweringId(null); setAnsweredStory(""); }} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 rounded-full hover:text-navy-700 transition-colors">Cancel</button>
-                    </div>
-                  </div>
-                )}
                 {tab === "approved" && (
-                  <button onClick={() => updateStatus(p.id, "rejected")} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 hover:text-rose-500 rounded-full transition-colors">Remove</button>
+                  <>
+                    <button onClick={() => updateStatus(p.id, "pending")} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 hover:text-amber-600 rounded-full transition-colors">Hold for Review</button>
+                    <button onClick={() => updateStatus(p.id, "rejected")} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 hover:text-rose-500 rounded-full transition-colors">Not for Wall</button>
+                  </>
                 )}
                 {tab === "rejected" && (
-                  <button onClick={() => updateStatus(p.id, "approved")} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 hover:text-emerald-600 rounded-full transition-colors">Restore</button>
+                  <>
+                    <button onClick={() => updateStatus(p.id, "pending")} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 hover:text-emerald-600 rounded-full transition-colors">Return to Queue</button>
+                  </>
                 )}
                 {tab === "testimonies" && (
                   <>
