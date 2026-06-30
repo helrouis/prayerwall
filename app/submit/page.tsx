@@ -165,7 +165,7 @@ export default function SubmitPage() {
             className="mt-0.5 accent-gold-500"
           />
           <span className="text-sm text-navy-700/65">
-            I'm happy for my prayer to be shared with this community after it's reviewed, shown under my name (or anonymously if I choose). My contact info, if provided, is kept private and used only so our care team can pray with me personally.
+            I'm happy for my prayer to be shared with this community after it's reviewed, shown under my name (or anonymously if I choose). My contact info, if provided, is kept private and will not be shared with anyone.
           </span>
         </label>
 
