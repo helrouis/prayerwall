@@ -18,6 +18,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="mt-24 py-10 border-t border-cream-200 text-center text-sm text-navy-700/50">
           <p className="font-serif italic">"Cast all your anxiety on him because he cares for you." — 1 Peter 5:7</p>
           <p className="mt-2">Prayer Wall · Built with love</p>
+          <p className="mt-3">
+            <a href="/privacy" className="text-navy-700/35 hover:text-navy-700/60 text-xs transition-colors">Privacy & Data</a>
+          </p>
         </footer>
       </body>
     </html>
