@@ -23,11 +23,15 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   if (!await auth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const { id, status, isAnswered, answeredStory } = await req.json();
+  const { id, status, isAnswered, answeredStory, isAnonymous } = await req.json();
   if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
   try {
     const sql = getDB();
-    if (status !== undefined) await sql`UPDATE "Prayer" SET status=${status} WHERE id=${id}`;
+    if (status !== undefined && isAnonymous === true) {
+      await sql`UPDATE "Prayer" SET status=${status}, "isAnonymous"=true WHERE id=${id}`;
+    } else if (status !== undefined) {
+      await sql`UPDATE "Prayer" SET status=${status} WHERE id=${id}`;
+    }
     if (isAnswered !== undefined) await sql`UPDATE "Prayer" SET "isAnswered"=${isAnswered} WHERE id=${id}`;
     if (answeredStory !== undefined) await sql`UPDATE "Prayer" SET "answeredStory"=${answeredStory} WHERE id=${id}`;
     return NextResponse.json({ success: true });

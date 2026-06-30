@@ -33,6 +33,7 @@ export default function AdminPage() {
   const [token, setToken] = useState("");
   const [answeringId, setAnsweringId] = useState<string | null>(null);
   const [answeredStory, setAnsweredStory] = useState("");
+  const [forceAnonIds, setForceAnonIds] = useState<Set<string>>(new Set());
   const [mode, setMode] = useState<"prayers" | "responses">("prayers");
   const [responses, setResponses] = useState<{ id: string; prayerTitle: string; firstName: string; type: string; content: string; platform?: string; createdAt: string }[]>([]);
   const [responsesLoading, setResponsesLoading] = useState(false);
@@ -97,11 +98,14 @@ export default function AdminPage() {
   };
 
   const updateStatus = async (id: string, status: string) => {
+    const body: Record<string, unknown> = { id, status };
+    if (status === "approved" && forceAnonIds.has(id)) body.isAnonymous = true;
     await fetch(`/api/admin/prayers`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ id, status }),
+      body: JSON.stringify(body),
     });
+    setForceAnonIds(prev => { const next = new Set(prev); next.delete(id); return next; });
     fetchPrayers(tab);
   };
 
@@ -253,7 +257,7 @@ export default function AdminPage() {
                 </div>
                 <span className="text-xs font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700 capitalize shrink-0">{p.category}</span>
               </div>
-              <p className="text-sm text-navy-700/65 leading-relaxed mb-4 line-clamp-3">{p.body}</p>
+              <p className="text-sm text-navy-700/65 leading-relaxed mb-4">{p.body}</p>
               {tab === "testimonies" && (p as Prayer & { answeredStory?: string }).answeredStory && (
                 <div className="mb-4 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
                   <p className="text-xs font-medium text-emerald-600 mb-1">Submitted Testimony</p>
@@ -263,6 +267,19 @@ export default function AdminPage() {
               <div className="flex flex-wrap gap-2">
                 {tab === "pending" && (
                   <>
+                    <label className="flex items-center gap-2 text-xs text-navy-700/60 cursor-pointer w-full mb-1">
+                      <input
+                        type="checkbox"
+                        checked={forceAnonIds.has(p.id)}
+                        onChange={(e) => setForceAnonIds(prev => {
+                          const next = new Set(prev);
+                          if (e.target.checked) next.add(p.id); else next.delete(p.id);
+                          return next;
+                        })}
+                        className="accent-gold-500"
+                      />
+                      Make anonymous
+                    </label>
                     <button onClick={() => updateStatus(p.id, "approved")} className="text-xs px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full transition-colors">Approve</button>
                     <button onClick={() => updateStatus(p.id, "rejected")} className="text-xs px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-full transition-colors">Reject</button>
                   </>
