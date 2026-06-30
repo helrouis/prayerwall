@@ -1,5 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
+import type { TurnstileInstance } from "@marsidev/react-turnstile";
 
 const CATEGORIES = ["Health", "Family", "Relationships", "Financial", "School", "Work", "Thanksgiving", "Salvation", "Other"];
 
@@ -11,29 +13,35 @@ export default function SubmitPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.agreed) { setError("Please agree to public display."); return; }
+    if (!form.agreed) { setError("Please agree to the terms above."); return; }
     if (!form.category) { setError("Please choose a category."); return; }
     if (!form.firstName.trim()) { setError("Your name is required."); return; }
-    if (!form.email.trim() && !form.phone.trim()) { setError("Please provide an email or phone number."); return; }
+    if (!turnstileToken) { setError("Please complete the security check."); return; }
     setLoading(true);
     setError("");
     try {
       const res = await fetch("/api/prayers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, turnstileToken }),
       });
       if (res.ok) {
         setSubmitted(true);
       } else {
         const d = await res.json();
         setError(d.error || "Something went wrong.");
+        turnstileRef.current?.reset();
+        setTurnstileToken(null);
       }
     } catch {
       setError("Could not reach the server.");
+      turnstileRef.current?.reset();
+      setTurnstileToken(null);
     } finally {
       setLoading(false);
     }
@@ -44,12 +52,8 @@ export default function SubmitPage() {
       <div className="max-w-xl mx-auto px-4 py-24 text-center">
         <div className="text-5xl mb-6">🙏</div>
         <h1 className="font-serif text-3xl font-semibold text-navy-700 mb-3">Thank you.</h1>
-        <p className="text-navy-700/60 text-lg">
-          Our community will be praying with you.
-        </p>
-        <p className="text-sm text-navy-700/40 mt-4">
-          Your prayer is being reviewed and will appear on the wall shortly.
-        </p>
+        <p className="text-navy-700/60 text-lg">Our community will be praying with you.</p>
+        <p className="text-sm text-navy-700/40 mt-4">Your prayer is being reviewed and will appear on the wall shortly.</p>
       </div>
     );
   }
@@ -59,9 +63,7 @@ export default function SubmitPage() {
       <div className="text-center mb-10">
         <p className="text-xs font-medium tracking-widest text-gold-500 uppercase mb-3">Share Your Heart</p>
         <h1 className="font-serif text-3xl font-semibold text-navy-700">Submit a Prayer Request</h1>
-        <p className="text-navy-700/55 mt-3">
-          You don't need to have the right words. Just share what's on your heart.
-        </p>
+        <p className="text-navy-700/55 mt-3">You don't need to have the right words. Just share what's on your heart.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-cream-200 p-8 space-y-6">
@@ -132,9 +134,12 @@ export default function SubmitPage() {
           </label>
         </div>
 
-        {/* Contact */}
+        {/* Contact (optional) */}
         <div className="space-y-3">
-          <label className="block text-sm font-medium text-navy-700">Contact <span className="text-rose-400">*</span> <span className="text-navy-700/40 font-normal">(private, never shown publicly — provide at least one)</span></label>
+          <div>
+            <label className="block text-sm font-medium text-navy-700 mb-0.5">Contact <span className="text-navy-700/40 font-normal">(optional)</span></label>
+            <p className="text-xs text-navy-700/50 mb-2">Leave your contact if you'd like our care team to pray with you personally — it's never shown on the wall or shared with anyone.</p>
+          </div>
           <input
             type="email"
             placeholder="Email address"
@@ -160,15 +165,27 @@ export default function SubmitPage() {
             className="mt-0.5 accent-gold-500"
           />
           <span className="text-sm text-navy-700/65">
-            I agree that this prayer may be publicly displayed on the Prayer Wall for the community to pray over.
+            I'm happy for my prayer to be shared with this community after it's reviewed, shown under my name (or anonymously if I choose). My contact info, if provided, is kept private and used only so our care team can pray with me personally.
           </span>
         </label>
+
+        {/* Turnstile */}
+        <div className="flex justify-center">
+          <Turnstile
+            ref={turnstileRef}
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+            onSuccess={(token) => setTurnstileToken(token)}
+            onExpire={() => setTurnstileToken(null)}
+            onError={() => { setTurnstileToken(null); setError("Security check failed. Please try again."); }}
+            options={{ theme: "light", size: "normal" }}
+          />
+        </div>
 
         {error && <p className="text-sm text-rose-500 bg-rose-50 px-4 py-2.5 rounded-xl">{error}</p>}
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || !turnstileToken}
           className="w-full bg-gold-500 hover:bg-gold-600 disabled:opacity-60 text-white font-medium py-3 rounded-full text-sm transition-colors"
         >
           {loading ? "Submitting…" : "Submit Prayer Request"}
