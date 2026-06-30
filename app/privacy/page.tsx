@@ -7,7 +7,7 @@ export default function PrivacyPage() {
       <div className="prose prose-sm text-navy-700/75 space-y-8">
 
         <p>
-          This prayer wall grew out of the CCF RunWithChrist community — a fellowship within CCF (Christ's Commission Fellowship) and its RunWithChrist sports ministry. Jason Cheng, a volunteer from within the community, stepped up to build and maintain it as an act of service. It is not an official CCF product — just the community finding a way to carry one another's burdens.
+          This prayer wall grew out of the CCF RunWithChrist community — a fellowship within CCF (Christ's Commission Fellowship) and its RunWithChrist sports ministry. It is not an official CCF product — just the community finding a way to carry one another's burdens.
         </p>
 
         <div>
@@ -15,7 +15,7 @@ export default function PrivacyPage() {
           <ul className="space-y-2 list-none pl-0">
             <li className="flex gap-2"><span className="text-gold-500 shrink-0">—</span><span><strong className="text-navy-700">Your name</strong>, to attach to your prayer. You can post anonymously if you prefer.</span></li>
             <li className="flex gap-2"><span className="text-gold-500 shrink-0">—</span><span><strong className="text-navy-700">Your prayer text</strong>, which is shared publicly after our team reviews and approves it.</span></li>
-            <li className="flex gap-2"><span className="text-gold-500 shrink-0">—</span><span><strong className="text-navy-700">Your email or phone number</strong> (optional) — only if you choose to leave it so our care team can pray with you personally.</span></li>
+            <li className="flex gap-2"><span className="text-gold-500 shrink-0">—</span><span><strong className="text-navy-700">Your email or phone number</strong> (optional) — only if you choose to leave it.</span></li>
           </ul>
         </div>
 
@@ -30,7 +30,7 @@ export default function PrivacyPage() {
 
         <div>
           <h2 className="font-serif text-lg font-semibold text-navy-700 mb-3">How long we keep your data</h2>
-          <p>Your information stays in the system for as long as the prayer wall is active, or until you ask Jason to remove it — whichever comes first. Just email him and he will take care of it personally.</p>
+          <p>Your information stays in the system for as long as the prayer wall is active, or until you request removal — whichever comes first.</p>
         </div>
 
         <div>
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
 
         <div>
           <h2 className="font-serif text-lg font-semibold text-navy-700 mb-3">Get in touch</h2>
-          <p>This app is community-driven and volunteer-run, so there's no company behind it — just people looking out for one another. Jason handles the technical side and is the point of contact for any questions. Write to him directly at <a href="mailto:jason.m.cheng@gmail.com" className="text-gold-500 hover:text-gold-600">jason.m.cheng@gmail.com</a> and he will respond personally.</p>
+          <p>This app is community-driven and volunteer-run — just people looking out for one another. For any questions or data requests, reach out at <a href="mailto:jason.m.cheng@gmail.com" className="text-gold-500 hover:text-gold-600">jason.m.cheng@gmail.com</a>.</p>
         </div>
 
         <p className="font-serif text-base italic text-navy-700/50 pt-4 border-t border-cream-200">
