@@ -34,3 +34,17 @@ CREATE TABLE IF NOT EXISTS "Admin" (
 CREATE INDEX IF NOT EXISTS idx_prayer_status   ON "Prayer"(status);
 CREATE INDEX IF NOT EXISTS idx_prayer_category ON "Prayer"(category);
 CREATE INDEX IF NOT EXISTS idx_prayer_created  ON "Prayer"("createdAt" DESC);
+
+CREATE TABLE IF NOT EXISTS "PrayerResponse" (
+  id          TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  "prayerId"  TEXT NOT NULL REFERENCES "Prayer"(id) ON DELETE CASCADE,
+  "firstName" TEXT NOT NULL,
+  type        TEXT NOT NULL,
+  content     TEXT NOT NULL,
+  platform    TEXT,
+  status      TEXT NOT NULL DEFAULT 'pending',
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_prayer_response_prayer ON "PrayerResponse"("prayerId");
+CREATE INDEX IF NOT EXISTS idx_prayer_response_status ON "PrayerResponse"(status);

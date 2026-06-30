@@ -12,6 +12,7 @@ interface PrayerCardProps {
   createdAt: string;
   prayerCount: number;
   isAnswered: boolean;
+  responseCount?: number;
   index?: number;
 }
 
@@ -29,7 +30,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 export default function PrayerCard({
   id, title, body, firstName, isAnonymous, category,
-  createdAt, prayerCount, isAnswered, index = 0,
+  createdAt, prayerCount, isAnswered, responseCount = 0, index = 0,
 }: PrayerCardProps) {
   const [count, setCount] = useState(prayerCount);
   const [prayed, setPrayed] = useState(false);
@@ -89,7 +90,7 @@ export default function PrayerCard({
             href={`/prayer/${id}`}
             className="text-xs text-gold-500 hover:text-gold-600 font-medium"
           >
-            Read more →
+            {responseCount > 0 ? `${responseCount} response${responseCount > 1 ? "s" : ""} →` : "Read more →"}
           </Link>
 
           <button

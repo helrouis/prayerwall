@@ -1,13 +1,19 @@
 import Link from "next/link";
-import { getApprovedPrayerById } from "@/lib/prayers";
+import { getApprovedPrayerById, getApprovedResponses } from "@/lib/prayers";
 import TestimonyForm from "@/components/TestimonyForm";
+import ResponseList from "@/components/ResponseList";
+import ResponseForm from "@/components/ResponseForm";
 
 export default async function PrayerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   let prayer = null;
 
+  let responses: Awaited<ReturnType<typeof getApprovedResponses>> = [];
   try {
-    prayer = await getApprovedPrayerById(id);
+    [prayer, responses] = await Promise.all([
+      getApprovedPrayerById(id),
+      getApprovedResponses(id),
+    ]);
   } catch (e) {
     console.error(e);
   }
@@ -55,6 +61,12 @@ export default async function PrayerDetailPage({ params }: { params: Promise<{ i
         )}
 
         {!prayer.isAnswered && <TestimonyForm prayerId={prayer.id} />}
+
+        <ResponseList responses={responses} />
+
+        <div className="mt-8 pt-6 border-t border-cream-200">
+          <ResponseForm prayerId={prayer.id} />
+        </div>
 
         <div className="mt-8 pt-6 border-t border-cream-200 flex items-center justify-between">
           <div className="text-sm text-navy-700/50">

@@ -26,6 +26,9 @@ export default function AdminPage() {
   const [token, setToken] = useState("");
   const [answeringId, setAnsweringId] = useState<string | null>(null);
   const [answeredStory, setAnsweredStory] = useState("");
+  const [mode, setMode] = useState<"prayers" | "responses">("prayers");
+  const [responses, setResponses] = useState<{ id: string; prayerTitle: string; firstName: string; type: string; content: string; platform?: string; createdAt: string }[]>([]);
+  const [responsesLoading, setResponsesLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,8 +67,36 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    if (authed) fetchPrayers(tab);
-  }, [authed, tab]);
+    if (authed && mode === "prayers") fetchPrayers(tab);
+  }, [authed, tab, mode]);
+
+  useEffect(() => {
+    if (authed && mode === "responses") fetchResponses();
+  }, [authed, mode]);
+
+  const fetchResponses = async () => {
+    setResponsesLoading(true);
+    try {
+      const res = await fetch(`/api/admin/responses?status=pending`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setResponses(data.responses || []);
+    } catch {
+      setResponses([]);
+    } finally {
+      setResponsesLoading(false);
+    }
+  };
+
+  const updateResponse = async (id: string, status: string) => {
+    await fetch(`/api/admin/responses`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ id, status }),
+    });
+    fetchResponses();
+  };
 
   const updateStatus = async (id: string, status: string) => {
     await fetch(`/api/admin/prayers`, {
@@ -132,6 +163,63 @@ export default function AdminPage() {
         <button onClick={() => setAuthed(false)} className="text-sm text-navy-700/50 hover:text-navy-700">Sign out</button>
       </div>
 
+      {/* Mode switcher */}
+      <div className="flex gap-2 mb-6 border-b border-cream-200 pb-4">
+        {(["prayers", "responses"] as const).map((m) => (
+          <button
+            key={m}
+            onClick={() => setMode(m)}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors capitalize ${
+              mode === m ? "bg-gold-500 text-white" : "border border-cream-200 text-navy-700/60 hover:border-gold-400"
+            }`}
+          >
+            {m}
+          </button>
+        ))}
+      </div>
+
+      {/* Responses panel */}
+      {mode === "responses" && (
+        <div>
+          {responsesLoading ? (
+            <div className="text-center py-20 text-navy-700/40">Loading…</div>
+          ) : responses.length === 0 ? (
+            <div className="text-center py-20 text-navy-700/40">
+              <p className="font-serif text-lg">No pending responses.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {responses.map((r) => (
+                <div key={r.id} className="bg-white rounded-2xl border border-cream-200 p-6">
+                  <p className="text-xs text-navy-700/40 mb-1">On prayer: <span className="font-medium text-navy-700/60">{r.prayerTitle}</span></p>
+                  <p className="text-sm font-medium text-navy-700 mb-2">{r.firstName}</p>
+                  {r.type === "comment" ? (
+                    <p className="text-sm text-navy-700/65 leading-relaxed mb-4">{r.content}</p>
+                  ) : (
+                    <a href={r.content} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs text-gold-500 hover:text-gold-600 font-medium mb-4 break-all">
+                      {r.platform ? r.platform.charAt(0).toUpperCase() + r.platform.slice(1) : "Link"}: {r.content} →
+                    </a>
+                  )}
+                  <div className="flex gap-2">
+                    <button onClick={() => updateResponse(r.id, "approved")}
+                      className="text-xs px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full transition-colors">
+                      Approve
+                    </button>
+                    <button onClick={() => updateResponse(r.id, "rejected")}
+                      className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 hover:text-rose-500 rounded-full transition-colors">
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Prayers panel */}
+      {mode === "prayers" && <>
       {/* Tabs */}
       <div className="flex flex-wrap gap-2 mb-6">
         {(["pending", "approved", "rejected", "testimonies"] as const).map((t) => (
@@ -224,6 +312,7 @@ export default function AdminPage() {
           ))}
         </div>
       )}
+      </>}
     </div>
   );
 }

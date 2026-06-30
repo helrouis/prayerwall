@@ -11,6 +11,17 @@ export type PublicPrayer = {
   prayerCount: number;
   isAnswered: boolean;
   answeredStory?: string | null;
+  responseCount: number;
+};
+
+export type PublicResponse = {
+  id: string;
+  prayerId: string;
+  firstName: string;
+  type: "comment" | "link";
+  content: string;
+  platform?: string | null;
+  createdAt: string;
 };
 
 export type WallStats = {
@@ -23,17 +34,33 @@ export async function getApprovedPrayers(category?: string): Promise<PublicPraye
   const sql = getDB();
   if (category && category !== "All") {
     return await sql<PublicPrayer[]>`
-      SELECT id,title,body,"firstName","isAnonymous",category,"createdAt","prayerCount","isAnswered"
-      FROM "Prayer"
-      WHERE status='approved' AND category=${category}
-      ORDER BY "createdAt" DESC
+      SELECT p.id,p.title,p.body,p."firstName",p."isAnonymous",p.category,p."createdAt",p."prayerCount",p."isAnswered",
+             COALESCE(COUNT(r.id),0)::int AS "responseCount"
+      FROM "Prayer" p
+      LEFT JOIN "PrayerResponse" r ON r."prayerId"=p.id AND r.status='approved'
+      WHERE p.status='approved' AND p.category=${category}
+      GROUP BY p.id
+      ORDER BY p."createdAt" DESC
     `;
   }
   return await sql<PublicPrayer[]>`
-    SELECT id,title,body,"firstName","isAnonymous",category,"createdAt","prayerCount","isAnswered"
-    FROM "Prayer"
-    WHERE status='approved'
-    ORDER BY "createdAt" DESC
+    SELECT p.id,p.title,p.body,p."firstName",p."isAnonymous",p.category,p."createdAt",p."prayerCount",p."isAnswered",
+           COALESCE(COUNT(r.id),0)::int AS "responseCount"
+    FROM "Prayer" p
+    LEFT JOIN "PrayerResponse" r ON r."prayerId"=p.id AND r.status='approved'
+    WHERE p.status='approved'
+    GROUP BY p.id
+    ORDER BY p."createdAt" DESC
+  `;
+}
+
+export async function getApprovedResponses(prayerId: string): Promise<PublicResponse[]> {
+  const sql = getDB();
+  return await sql<PublicResponse[]>`
+    SELECT id,"prayerId","firstName",type,content,platform,"createdAt"
+    FROM "PrayerResponse"
+    WHERE "prayerId"=${prayerId} AND status='approved'
+    ORDER BY "createdAt" ASC
   `;
 }
 
