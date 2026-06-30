@@ -34,6 +34,11 @@ export async function POST(req: NextRequest) {
   if (!agreed) return NextResponse.json({ error: "Please agree to public display." }, { status: 400 });
   if (!firstName?.trim()) return NextResponse.json({ error: "Your name is required." }, { status: 400 });
   if (!email?.trim() && !phone?.trim()) return NextResponse.json({ error: "Please provide an email or phone number." }, { status: 400 });
+  if (firstName.trim().length > 100) return NextResponse.json({ error: "Name too long." }, { status: 400 });
+  if (title.trim().length > 200) return NextResponse.json({ error: "Title too long." }, { status: 400 });
+  if (prayer.trim().length > 1500) return NextResponse.json({ error: "Prayer too long (max 1500 characters)." }, { status: 400 });
+  if (email && email.trim().length > 254) return NextResponse.json({ error: "Email too long." }, { status: 400 });
+  if (phone && phone.trim().length > 20) return NextResponse.json({ error: "Phone too long." }, { status: 400 });
 
   if (rateLimit(req)) return NextResponse.json({ error: "Too many submissions. Try again shortly." }, { status: 429 });
   try {

@@ -12,14 +12,19 @@ const LINK_LABELS: Record<string, string> = {
   tiktok:    "TikTok",
 };
 
+const YT_ID_RE = /^[a-zA-Z0-9_-]{11}$/;
+const SPOTIFY_PATH_RE = /^\/(track|album|playlist|episode|show)\/[a-zA-Z0-9]+$/;
+
 function youTubeEmbedId(url: string): string | null {
   try {
     const u = new URL(url);
-    if (u.hostname === "youtu.be") return u.pathname.slice(1).split("?")[0];
-    if (u.hostname.includes("youtube.com")) {
-      if (u.pathname.startsWith("/shorts/")) return u.pathname.split("/shorts/")[1].split("?")[0];
-      return u.searchParams.get("v");
+    let id: string | null = null;
+    if (u.hostname === "youtu.be") id = u.pathname.slice(1).split("?")[0];
+    else if (u.hostname.endsWith("youtube.com")) {
+      if (u.pathname.startsWith("/shorts/")) id = u.pathname.split("/shorts/")[1].split("?")[0];
+      else id = u.searchParams.get("v");
     }
+    return id && YT_ID_RE.test(id) ? id : null;
   } catch {}
   return null;
 }
@@ -27,8 +32,10 @@ function youTubeEmbedId(url: string): string | null {
 function spotifyEmbedUrl(url: string): string | null {
   try {
     const u = new URL(url);
-    if (!u.hostname.includes("spotify.com")) return null;
-    return `https://open.spotify.com/embed${u.pathname}`;
+    if (!u.hostname.endsWith("spotify.com")) return null;
+    const path = u.pathname.replace(/\/$/, "");
+    if (!SPOTIFY_PATH_RE.test(path)) return null;
+    return `https://open.spotify.com/embed${path}`;
   } catch {}
   return null;
 }
@@ -40,9 +47,10 @@ function ResponseMedia({ platform, content }: { platform: string | null | undefi
       return (
         <div className="rounded-xl overflow-hidden aspect-video w-full">
           <iframe
-            src={`https://www.youtube.com/embed/${videoId}`}
+            src={`https://www.youtube.com/embed/${encodeURIComponent(videoId)}`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
+            sandbox="allow-scripts allow-same-origin allow-presentation"
             className="w-full h-full"
           />
         </div>
@@ -57,6 +65,7 @@ function ResponseMedia({ platform, content }: { platform: string | null | undefi
         <iframe
           src={embedUrl}
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          sandbox="allow-scripts allow-same-origin"
           loading="lazy"
           className="w-full rounded-xl"
           height="152"
