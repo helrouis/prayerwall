@@ -1,16 +1,16 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { getDB } from "@/lib/db";
-import { verifyToken } from "@/lib/auth";
+import { verifySupabaseToken } from "@/lib/auth";
 
-function auth(req: NextRequest) {
+async function auth(req: NextRequest) {
   const h = req.headers.get("Authorization");
   if (!h?.startsWith("Bearer ")) return null;
-  return verifyToken(h.slice(7));
+  return await verifySupabaseToken(h.slice(7));
 }
 
 export async function GET(req: NextRequest) {
-  if (!auth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!await auth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const status = new URL(req.url).searchParams.get("status") || "pending";
   try {
     const sql = getDB();
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  if (!auth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!await auth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id, status, isAnswered, answeredStory } = await req.json();
   if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
   try {
@@ -35,7 +35,7 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!auth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!await auth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const id = new URL(req.url).searchParams.get("id");
   if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
   try {
