@@ -4,6 +4,15 @@ import { getDB } from "@/lib/db";
 import { getApprovedPrayers } from "@/lib/prayers";
 
 const CATEGORIES = ["Health","Family","Relationships","Financial","School","Work","Thanksgiving","Salvation","Other"];
+const submissions = new Map<string, number[]>();
+function rateLimit(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const now = Date.now(), window = 60_000, limit = 50;
+  const times = (submissions.get(ip) || []).filter(t => now - t < window);
+  if (times.length >= limit) return true;
+  submissions.set(ip, [...times, now]);
+  return false;
+}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -26,6 +35,7 @@ export async function POST(req: NextRequest) {
   if (!firstName?.trim()) return NextResponse.json({ error: "Your name is required." }, { status: 400 });
   if (!email?.trim() && !phone?.trim()) return NextResponse.json({ error: "Please provide an email or phone number." }, { status: 400 });
 
+  if (rateLimit(req)) return NextResponse.json({ error: "Too many submissions. Try again shortly." }, { status: 429 });
   try {
     const sql = getDB();
     const [row] = await sql`

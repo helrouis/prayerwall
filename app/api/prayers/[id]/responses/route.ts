@@ -23,6 +23,16 @@ function detectPlatform(url: string): string | null {
   }
 }
 
+const submissions = new Map<string, number[]>();
+function rateLimit(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const now = Date.now(), window = 60_000, limit = 100;
+  const times = (submissions.get(ip) || []).filter(t => now - t < window);
+  if (times.length >= limit) return true;
+  submissions.set(ip, [...times, now]);
+  return false;
+}
+
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   try {
@@ -41,6 +51,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  if (rateLimit(req)) return NextResponse.json({ error: "Too many submissions. Try again shortly." }, { status: 429 });
   const body = await req.json();
   const { firstName, type, content } = body;
 
