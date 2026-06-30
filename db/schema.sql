@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS "Prayer" (
   "createdAt"     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   "prayerCount"   INT NOT NULL DEFAULT 0,
   "isAnswered"    BOOLEAN NOT NULL DEFAULT false,
-  "answeredStory" TEXT
+  "answeredStory" TEXT,
+  phone           TEXT
 );
 
 CREATE TABLE IF NOT EXISTS "PrayerReaction" (

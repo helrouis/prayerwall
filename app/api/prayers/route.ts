@@ -31,20 +31,22 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { title, body: prayer, category, isAnonymous, firstName, email, agreed } = body;
+  const { title, body: prayer, category, isAnonymous, firstName, email, phone, agreed } = body;
   if (!title?.trim() || !prayer?.trim()) return NextResponse.json({ error: "Title and prayer required." }, { status: 400 });
   if (!CATEGORIES.includes(category)) return NextResponse.json({ error: "Invalid category." }, { status: 400 });
   if (!agreed) return NextResponse.json({ error: "Please agree to public display." }, { status: 400 });
+  if (!firstName?.trim()) return NextResponse.json({ error: "Your name is required." }, { status: 400 });
+  if (!email?.trim() && !phone?.trim()) return NextResponse.json({ error: "Please provide an email or phone number." }, { status: 400 });
 
   const ip = getIP(req);
   if (rateLimit(ip)) return NextResponse.json({ error: "Too many submissions. Try later." }, { status: 429 });
   try {
     const sql = getDB();
     const [row] = await sql`
-      INSERT INTO "Prayer" (id,title,body,"firstName","isAnonymous",email,category,status,"createdAt","prayerCount","isAnswered")
+      INSERT INTO "Prayer" (id,title,body,"firstName","isAnonymous",email,phone,category,status,"createdAt","prayerCount","isAnswered")
       VALUES (gen_random_uuid(),${title.trim()},${prayer.trim()},
-        ${isAnonymous ? null : (firstName?.trim()||null)},
-        ${!!isAnonymous},${email?.trim()||null},${category},'pending',NOW(),0,false)
+        ${firstName.trim()},
+        ${!!isAnonymous},${email?.trim()||null},${phone?.trim()||null},${category},'pending',NOW(),0,false)
       RETURNING id
     `;
     return NextResponse.json({ id: row.id }, { status: 201 });

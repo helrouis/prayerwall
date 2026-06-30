@@ -6,7 +6,7 @@ const CATEGORIES = ["Health", "Family", "Relationships", "Financial", "School", 
 export default function SubmitPage() {
   const [form, setForm] = useState({
     title: "", body: "", category: "", isAnonymous: false,
-    firstName: "", email: "", agreed: false,
+    firstName: "", email: "", phone: "", agreed: false,
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -16,6 +16,8 @@ export default function SubmitPage() {
     e.preventDefault();
     if (!form.agreed) { setError("Please agree to public display."); return; }
     if (!form.category) { setError("Please choose a category."); return; }
+    if (!form.firstName.trim()) { setError("Your name is required."); return; }
+    if (!form.email.trim() && !form.phone.trim()) { setError("Please provide an email or phone number."); return; }
     setLoading(true);
     setError("");
     try {
@@ -105,48 +107,43 @@ export default function SubmitPage() {
           </select>
         </div>
 
-        {/* Name options */}
+        {/* Name */}
         <div>
-          <label className="block text-sm font-medium text-navy-700 mb-2">Display name</label>
-          <div className="space-y-2">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="radio"
-                checked={form.isAnonymous}
-                onChange={() => setForm({ ...form, isAnonymous: true, firstName: "" })}
-                className="accent-gold-500"
-              />
-              <span className="text-sm text-navy-700/70">Anonymous</span>
-            </label>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="radio"
-                checked={!form.isAnonymous}
-                onChange={() => setForm({ ...form, isAnonymous: false })}
-                className="accent-gold-500"
-              />
-              <span className="text-sm text-navy-700/70">Display my first name</span>
-            </label>
-          </div>
-          {!form.isAnonymous && (
+          <label className="block text-sm font-medium text-navy-700 mb-1.5">Your name <span className="text-rose-400">*</span></label>
+          <input
+            type="text"
+            required
+            placeholder="First name"
+            value={form.firstName}
+            onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+            className="w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400"
+          />
+          <label className="flex items-center gap-2.5 mt-2.5 cursor-pointer">
             <input
-              type="text"
-              placeholder="First name"
-              value={form.firstName}
-              onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-              className="mt-3 w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400"
+              type="checkbox"
+              checked={form.isAnonymous}
+              onChange={(e) => setForm({ ...form, isAnonymous: e.target.checked })}
+              className="accent-gold-500"
             />
-          )}
+            <span className="text-sm text-navy-700/60">Show as anonymous on the prayer wall</span>
+          </label>
         </div>
 
-        {/* Email */}
-        <div>
-          <label className="block text-sm font-medium text-navy-700 mb-1.5">Email <span className="text-navy-700/40 font-normal">(optional)</span></label>
+        {/* Contact */}
+        <div className="space-y-3">
+          <label className="block text-sm font-medium text-navy-700">Contact <span className="text-rose-400">*</span> <span className="text-navy-700/40 font-normal">(private, never shown publicly — provide at least one)</span></label>
           <input
             type="email"
-            placeholder="For prayer updates only, never shown publicly"
+            placeholder="Email address"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
+            className="w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400"
+          />
+          <input
+            type="tel"
+            placeholder="Phone number"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
             className="w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400"
           />
         </div>

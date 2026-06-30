@@ -19,6 +19,7 @@ interface Prayer {
   prayerCount: number;
   isAnswered: boolean;
   email?: string;
+  phone?: string;
 }
 
 export default function AdminPage() {
@@ -246,8 +247,8 @@ export default function AdminPage() {
                 <div>
                   <h3 className="font-serif text-base font-semibold text-navy-700">{p.title}</h3>
                   <p className="text-xs text-navy-700/40 mt-0.5">
-                    {p.isAnonymous ? "Anonymous" : p.firstName} · {p.category} · {new Date(p.createdAt).toLocaleDateString()}
-                    {p.email && ` · ${p.email}`}
+                    {p.firstName} {p.isAnonymous ? "(anonymous)" : ""} · {p.category} · {new Date(p.createdAt).toLocaleDateString()}
+                    {p.email && ` · ${p.email}`}{p.phone && ` · ${p.phone}`}
                   </p>
                 </div>
                 <span className="text-xs font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700 capitalize shrink-0">{p.category}</span>
