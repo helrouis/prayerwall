@@ -21,7 +21,7 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [prayers, setPrayers] = useState<Prayer[]>([]);
-  const [tab, setTab] = useState<"pending" | "approved" | "rejected">("pending");
+  const [tab, setTab] = useState<"pending" | "approved" | "rejected" | "testimonies">("pending");
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState("");
   const [answeringId, setAnsweringId] = useState<string | null>(null);
@@ -76,11 +76,12 @@ export default function AdminPage() {
     fetchPrayers(tab);
   };
 
-  const markAnswered = async (id: string) => {
+  const markAnswered = async (id: string, existingStory?: string) => {
+    const story = existingStory !== undefined ? existingStory : (answeredStory.trim() || null);
     await fetch(`/api/admin/prayers`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ id, isAnswered: true, answeredStory: answeredStory.trim() || null }),
+      body: JSON.stringify({ id, isAnswered: true, answeredStory: story }),
     });
     setAnsweringId(null);
     setAnsweredStory("");
@@ -132,8 +133,8 @@ export default function AdminPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-6">
-        {(["pending", "approved", "rejected"] as const).map((t) => (
+      <div className="flex flex-wrap gap-2 mb-6">
+        {(["pending", "approved", "rejected", "testimonies"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -167,6 +168,12 @@ export default function AdminPage() {
                 <span className="text-xs font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700 capitalize shrink-0">{p.category}</span>
               </div>
               <p className="text-sm text-navy-700/65 leading-relaxed mb-4 line-clamp-3">{p.body}</p>
+              {tab === "testimonies" && (p as Prayer & { answeredStory?: string }).answeredStory && (
+                <div className="mb-4 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+                  <p className="text-xs font-medium text-emerald-600 mb-1">Submitted Testimony</p>
+                  <p className="text-sm text-emerald-800">{(p as Prayer & { answeredStory?: string }).answeredStory}</p>
+                </div>
+              )}
               <div className="flex flex-wrap gap-2">
                 {tab === "pending" && (
                   <>
@@ -197,6 +204,19 @@ export default function AdminPage() {
                 )}
                 {tab === "rejected" && (
                   <button onClick={() => updateStatus(p.id, "approved")} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 hover:text-emerald-600 rounded-full transition-colors">Restore</button>
+                )}
+                {tab === "testimonies" && (
+                  <>
+                    <button onClick={() => markAnswered(p.id, (p as Prayer & { answeredStory?: string }).answeredStory)} className="text-xs px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full transition-colors">Approve Testimony</button>
+                    <button onClick={async () => {
+                      await fetch(`/api/admin/prayers`, {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                        body: JSON.stringify({ id: p.id, answeredStory: null }),
+                      });
+                      fetchPrayers(tab);
+                    }} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 hover:text-rose-500 rounded-full transition-colors">Dismiss</button>
+                  </>
                 )}
                 {p.isAnswered && <span className="text-xs text-emerald-600 font-medium px-3 py-1.5">✓ Answered</span>}
               </div>

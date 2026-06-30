@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getApprovedPrayerById } from "@/lib/prayers";
+import TestimonyForm from "@/components/TestimonyForm";
 
 export default async function PrayerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -52,6 +53,8 @@ export default async function PrayerDetailPage({ params }: { params: Promise<{ i
             <p className="text-emerald-800 text-sm leading-relaxed">{prayer.answeredStory}</p>
           </div>
         )}
+
+        {!prayer.isAnswered && <TestimonyForm prayerId={prayer.id} />}
 
         <div className="mt-8 pt-6 border-t border-cream-200 flex items-center justify-between">
           <div className="text-sm text-navy-700/50">

@@ -14,7 +14,9 @@ export async function GET(req: NextRequest) {
   const status = new URL(req.url).searchParams.get("status") || "pending";
   try {
     const sql = getDB();
-    const prayers = await sql`SELECT * FROM "Prayer" WHERE status=${status} ORDER BY "createdAt" DESC`;
+    const prayers = status === "testimonies"
+      ? await sql`SELECT * FROM "Prayer" WHERE status='approved' AND "answeredStory" IS NOT NULL AND "isAnswered"=false ORDER BY "createdAt" DESC`
+      : await sql`SELECT * FROM "Prayer" WHERE status=${status} ORDER BY "createdAt" DESC`;
     return NextResponse.json({ prayers });
   } catch { return NextResponse.json({ prayers: [] }); }
 }
