@@ -36,6 +36,13 @@ export default function PrayerCard({
   const [prayState, setPrayState] = useState<"idle" | "pending" | "done">("idle");
 
   const displayName = isAnonymous ? "Anonymous" : firstName || "Anonymous";
+
+  const preview = (() => {
+    const limit = 120;
+    if (body.length <= limit) return body;
+    const cut = body.slice(0, limit).replace(/\s+\S*$/, "").replace(/[,;:.!?\-–—]+$/, "");
+    return cut + "…";
+  })();
   const colorClass = CATEGORY_COLORS[category] || CATEGORY_COLORS["Other"];
   const date = new Date(createdAt).toLocaleDateString("en-US", {
     month: "short", day: "numeric", year: "numeric",
@@ -77,8 +84,8 @@ export default function PrayerCard({
         </h3>
       </Link>
 
-      <p className="text-sm text-navy-700/65 leading-relaxed line-clamp-2 mb-4">
-        {body}
+      <p className="text-sm text-navy-700/65 leading-relaxed mb-4">
+        {preview}
       </p>
 
       <div className="flex items-center justify-between pt-3 border-t border-cream-200">
