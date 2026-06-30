@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Prayer {
+  id           String    @id @default(cuid())
+  title        String
+  body         String
+  firstName    String?
+  isAnonymous  Boolean   @default(false)
+  email        String?
+  category     String
+  status       String    @default("pending")
+  createdAt    DateTime  @default(now())
+  prayerCount  Int       @default(0)
+  isAnswered   Boolean   @default(false)
+  answeredStory String?
+  reactions    PrayerReaction[]
+}
+
+model PrayerReaction {
+  id        String   @id @default(cuid())
+  prayerId  String
+  ipHash    String
+  createdAt DateTime @default(now())
+  prayer    Prayer   @relation(fields: [prayerId], references: [id], onDelete: Cascade)
+
+  @@unique([prayerId, ipHash])
+}
+
+model Admin {
+  id           String @id @default(cuid())
+  username     String @unique
+  passwordHash String
+}
