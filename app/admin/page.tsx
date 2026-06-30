@@ -28,7 +28,7 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [prayers, setPrayers] = useState<Prayer[]>([]);
-  const [tab, setTab] = useState<"pending" | "approved" | "rejected" | "testimonies">("pending");
+  const [tab, setTab] = useState<"pending" | "approved" | "held" | "testimonies">("pending");
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState("");
   const [forceAnonIds, setForceAnonIds] = useState<Set<string>>(new Set());
@@ -50,8 +50,9 @@ export default function AdminPage() {
 
   const fetchPrayers = async (status: string) => {
     setLoading(true);
+    const apiStatus = status === "held" ? "rejected" : status;
     try {
-      const res = await fetch(`/api/admin/prayers?status=${status}`, {
+      const res = await fetch(`/api/admin/prayers?status=${apiStatus}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -219,15 +220,15 @@ export default function AdminPage() {
       {mode === "prayers" && <>
       {/* Tabs */}
       <div className="flex flex-wrap gap-2 mb-6">
-        {(["pending", "approved", "rejected", "testimonies"] as const).map((t) => (
+        {(["pending", "approved", "held", "testimonies"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors capitalize ${
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
               tab === t ? "bg-navy-700 text-white" : "border border-cream-200 text-navy-700/60 hover:border-gold-400"
             }`}
           >
-            {t}
+            {t === "held" ? "Held Prayers" : t.charAt(0).toUpperCase() + t.slice(1)}
           </button>
         ))}
       </div>
@@ -236,7 +237,7 @@ export default function AdminPage() {
         <div className="text-center py-20 text-navy-700/40">Loading…</div>
       ) : prayers.length === 0 ? (
         <div className="text-center py-20 text-navy-700/40">
-          <p className="font-serif text-lg">No {tab} prayers.</p>
+          <p className="font-serif text-lg">No {tab === "held" ? "held" : tab} prayers.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -276,7 +277,7 @@ export default function AdminPage() {
                       Make anonymous
                     </label>
                     <button onClick={() => updateStatus(p.id, "approved")} className="text-xs px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full transition-colors">Approve</button>
-                    <button onClick={() => updateStatus(p.id, "rejected")} className="text-xs px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-full transition-colors">Reject</button>
+                    <button onClick={() => updateStatus(p.id, "rejected")} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 hover:text-rose-500 rounded-full transition-colors">Set Aside</button>
                   </>
                 )}
                 {tab === "approved" && (
@@ -285,10 +286,8 @@ export default function AdminPage() {
                     <button onClick={() => updateStatus(p.id, "rejected")} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 hover:text-rose-500 rounded-full transition-colors">Not for Wall</button>
                   </>
                 )}
-                {tab === "rejected" && (
-                  <>
-                    <button onClick={() => updateStatus(p.id, "pending")} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 hover:text-emerald-600 rounded-full transition-colors">Return to Queue</button>
-                  </>
+                {tab === "held" && (
+                  <button onClick={() => updateStatus(p.id, "pending")} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 hover:text-emerald-600 rounded-full transition-colors">Return to Queue</button>
                 )}
                 {tab === "testimonies" && (
                   <>
