@@ -24,6 +24,8 @@ export default function AdminPage() {
   const [tab, setTab] = useState<"pending" | "approved" | "rejected">("pending");
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState("");
+  const [answeringId, setAnsweringId] = useState<string | null>(null);
+  const [answeredStory, setAnsweredStory] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,8 +80,10 @@ export default function AdminPage() {
     await fetch(`/api/admin/prayers`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ id, isAnswered: true }),
+      body: JSON.stringify({ id, isAnswered: true, answeredStory: answeredStory.trim() || null }),
     });
+    setAnsweringId(null);
+    setAnsweredStory("");
     fetchPrayers(tab);
   };
 
@@ -170,8 +174,23 @@ export default function AdminPage() {
                     <button onClick={() => updateStatus(p.id, "rejected")} className="text-xs px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-full transition-colors">Reject</button>
                   </>
                 )}
-                {tab === "approved" && !p.isAnswered && (
-                  <button onClick={() => markAnswered(p.id)} className="text-xs px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-full transition-colors">Mark Answered</button>
+                {tab === "approved" && !p.isAnswered && answeringId !== p.id && (
+                  <button onClick={() => setAnsweringId(p.id)} className="text-xs px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-full transition-colors">Mark Answered</button>
+                )}
+                {tab === "approved" && !p.isAnswered && answeringId === p.id && (
+                  <div className="w-full mt-3 space-y-2">
+                    <textarea
+                      rows={3}
+                      placeholder="Share the testimony (optional)…"
+                      value={answeredStory}
+                      onChange={(e) => setAnsweredStory(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400 resize-none"
+                    />
+                    <div className="flex gap-2">
+                      <button onClick={() => markAnswered(p.id)} className="text-xs px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full transition-colors">Confirm</button>
+                      <button onClick={() => { setAnsweringId(null); setAnsweredStory(""); }} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 rounded-full hover:text-navy-700 transition-colors">Cancel</button>
+                    </div>
+                  </div>
                 )}
                 {tab === "approved" && (
                   <button onClick={() => updateStatus(p.id, "rejected")} className="text-xs px-3 py-1.5 border border-cream-200 text-navy-700/50 hover:text-rose-500 rounded-full transition-colors">Remove</button>

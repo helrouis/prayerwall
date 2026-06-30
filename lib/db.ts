@@ -6,7 +6,7 @@ function getDB() {
   if (!sql) {
     const url = process.env.DATABASE_URL;
     if (!url) throw new Error("DATABASE_URL is not set");
-    const isSupabase = url.includes("supabase.co");
+    const isSupabase = url.includes("supabase.co") || url.includes("supabase.com");
     sql = postgres(url, { max: 5, ...(isSupabase && { ssl: "require" }) });
   }
   return sql;
