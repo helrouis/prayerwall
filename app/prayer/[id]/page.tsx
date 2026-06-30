@@ -3,6 +3,7 @@ import { getApprovedPrayerById, getApprovedResponses } from "@/lib/prayers";
 import TestimonyForm from "@/components/TestimonyForm";
 import ResponseList from "@/components/ResponseList";
 import ResponseForm from "@/components/ResponseForm";
+import PrayButton from "@/components/PrayButton";
 
 export default async function PrayerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -68,11 +69,11 @@ export default async function PrayerDetailPage({ params }: { params: Promise<{ i
           <ResponseForm prayerId={prayer.id} />
         </div>
 
-        <div className="mt-8 pt-6 border-t border-cream-200 flex items-center justify-between">
-          <div className="text-sm text-navy-700/50">
-            <span className="font-serif text-2xl font-semibold text-navy-700 mr-1.5">{prayer.prayerCount}</span>
-            people have prayed
-          </div>
+        <div className="mt-8 pt-6 border-t border-cream-200">
+          <PrayButton prayerId={prayer.id} initialCount={prayer.prayerCount} />
+        </div>
+
+        <div className="pt-4 border-t border-cream-200 text-center">
           <Link href="/submit" className="text-sm text-gold-500 hover:text-gold-600 font-medium transition-colors">
             Submit your own prayer →
           </Link>

@@ -33,8 +33,7 @@ export default function PrayerCard({
   createdAt, prayerCount, isAnswered, responseCount = 0, index = 0,
 }: PrayerCardProps) {
   const [count, setCount] = useState(prayerCount);
-  const [prayed, setPrayed] = useState(false);
-  const [animating, setAnimating] = useState(false);
+  const [prayState, setPrayState] = useState<"idle" | "pending" | "done">("idle");
 
   const displayName = isAnonymous ? "Anonymous" : firstName || "Anonymous";
   const colorClass = CATEGORY_COLORS[category] || CATEGORY_COLORS["Other"];
@@ -44,11 +43,11 @@ export default function PrayerCard({
 
   const handlePray = async (e: React.MouseEvent) => {
     e.preventDefault();
-    if (prayed) return;
-    setAnimating(true);
-    setPrayed(true);
+    if (prayState !== "idle") return;
+    setPrayState("pending");
+    await new Promise((r) => setTimeout(r, 1000));
     setCount((c) => c + 1);
-    setTimeout(() => setAnimating(false), 500);
+    setPrayState("done");
     try {
       await fetch(`/api/prayers/${id}/pray`, { method: "POST" });
     } catch {}
@@ -95,16 +94,16 @@ export default function PrayerCard({
 
           <button
             onClick={handlePray}
-            disabled={prayed}
+            disabled={prayState !== "idle"}
             className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-full border transition-all ${
-              prayed
+              prayState === "done"
                 ? "bg-amber-50 border-amber-200 text-amber-600"
+                : prayState === "pending"
+                ? "border-gold-300 text-gold-500 animate-pulse"
                 : "border-cream-200 text-navy-700/50 hover:border-gold-400 hover:text-gold-500"
             }`}
           >
-            <span className={animating ? "pray-animate inline-block" : "inline-block"}>
-              🙏
-            </span>
+            <span className="inline-block">🙏</span>
             <span className="font-medium">{count}</span>
           </button>
         </div>
