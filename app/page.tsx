@@ -69,13 +69,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
         </div>
       </section>
 
-      {/* Masonry grid - CSS columns approach (no extra client bundle) */}
       <section className="max-w-6xl mx-auto px-4 pb-16">
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {prayers.map((prayer, i) => (
-            <div key={prayer.id} className="break-inside-avoid mb-4">
-              <PrayerCard {...prayer} index={i} />
-            </div>
+            <PrayerCard key={prayer.id} {...prayer} index={i} />
           ))}
         </div>
 

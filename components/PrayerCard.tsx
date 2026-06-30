@@ -76,7 +76,7 @@ export default function PrayerCard({
         {title}
       </h3>
 
-      <p className="text-sm text-navy-700/65 leading-relaxed line-clamp-4 mb-4">
+      <p className="text-sm text-navy-700/65 leading-relaxed line-clamp-2 mb-4">
         {body}
       </p>
 
