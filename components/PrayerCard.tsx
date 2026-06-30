@@ -71,9 +71,11 @@ export default function PrayerCard({
         <span className="text-xs text-navy-700/40 shrink-0">{date}</span>
       </div>
 
-      <h3 className="font-serif text-base font-semibold text-navy-700 leading-snug mb-2">
-        {title}
-      </h3>
+      <Link href={`/prayer/${id}`}>
+        <h3 className="font-serif text-base font-semibold text-navy-700 leading-snug mb-2 hover:text-gold-500 transition-colors">
+          {title}
+        </h3>
+      </Link>
 
       <p className="text-sm text-navy-700/65 leading-relaxed line-clamp-2 mb-4">
         {body}
