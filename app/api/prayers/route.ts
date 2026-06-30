@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
   if (!title?.trim() || !prayer?.trim()) return NextResponse.json({ error: "Title and prayer required." }, { status: 400 });
   if (!CATEGORIES.includes(category)) return NextResponse.json({ error: "Invalid category." }, { status: 400 });
   if (!agreed) return NextResponse.json({ error: "Please agree to the terms." }, { status: 400 });
-  if (!firstName?.trim()) return NextResponse.json({ error: "Your name is required." }, { status: 400 });
+  if (!firstName?.trim()) return NextResponse.json({ error: "A display name is required." }, { status: 400 });
   if (firstName.trim().length > 100) return NextResponse.json({ error: "Name too long." }, { status: 400 });
   if (title.trim().length > 200) return NextResponse.json({ error: "Title too long." }, { status: 400 });
   if (prayer.trim().length > 5000) return NextResponse.json({ error: "Prayer too long (max 5000 characters)." }, { status: 400 });

@@ -44,7 +44,7 @@ export default function ResponseForm({ prayerId }: { prayerId: string }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!firstName.trim()) { setError("Please enter your first name."); return; }
+    if (!firstName.trim()) { setError("Please enter a display name."); return; }
     if (!content.trim()) { setError(type === "comment" ? "Please write something." : "Please paste a link."); return; }
     if (type === "link" && !detectedPlatform) {
       setError("Only Spotify, YouTube, Facebook, Instagram, and TikTok links are allowed.");
@@ -113,11 +113,11 @@ export default function ResponseForm({ prayerId }: { prayerId: string }) {
         ))}
       </div>
 
-      {/* First name */}
+      {/* Display name */}
       <div>
         <input
           type="text"
-          placeholder="Your first name"
+          placeholder="Your display name or nickname"
           maxLength={100}
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}

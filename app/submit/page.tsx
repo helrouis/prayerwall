@@ -20,7 +20,7 @@ export default function SubmitPage() {
     e.preventDefault();
     if (!form.agreed) { setError("Please agree to the terms above."); return; }
     if (!form.category) { setError("Please choose a category."); return; }
-    if (!form.firstName.trim()) { setError("Your name is required."); return; }
+    if (!form.firstName.trim()) { setError("A display name is required."); return; }
     if (!turnstileToken) { setError("Please complete the security check."); return; }
     setLoading(true);
     setError("");
@@ -112,12 +112,12 @@ export default function SubmitPage() {
 
         {/* Name */}
         <div>
-          <label className="block text-sm font-medium text-navy-700 mb-1.5">Your name <span className="text-rose-400">*</span></label>
+          <label className="block text-sm font-medium text-navy-700 mb-1.5">Display name <span className="text-rose-400">*</span></label>
           <input
             type="text"
             required
             maxLength={100}
-            placeholder="First name"
+            placeholder="Your name, nickname, or alias"
             value={form.firstName}
             onChange={(e) => setForm({ ...form, firstName: e.target.value })}
             className="w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400"
