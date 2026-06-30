@@ -36,6 +36,17 @@ export default function AdminPage() {
   const [responses, setResponses] = useState<{ id: string; prayerTitle: string; firstName: string; type: string; content: string; platform?: string; createdAt: string }[]>([]);
   const [responsesLoading, setResponsesLoading] = useState(false);
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) { setToken(session.access_token); setAuthed(true); }
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) { setToken(session.access_token); setAuthed(true); }
+      else { setToken(""); setAuthed(false); }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError("");
@@ -158,7 +169,7 @@ export default function AdminPage() {
     <div className="max-w-5xl mx-auto px-4 py-10">
       <div className="flex items-center justify-between mb-8">
         <h1 className="font-serif text-2xl font-semibold text-navy-700">Prayer Wall Admin</h1>
-        <button onClick={() => setAuthed(false)} className="text-sm text-navy-700/50 hover:text-navy-700">Sign out</button>
+        <button onClick={() => supabase.auth.signOut()} className="text-sm text-navy-700/50 hover:text-navy-700">Sign out</button>
       </div>
 
       {/* Mode switcher */}
