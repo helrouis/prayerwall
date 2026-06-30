@@ -138,7 +138,7 @@ export default function SubmitPage() {
         <div className="space-y-3">
           <div>
             <label className="block text-sm font-medium text-navy-700 mb-0.5">Contact <span className="text-navy-700/40 font-normal">(optional)</span></label>
-            <p className="text-xs text-navy-700/50 mb-2">Leave your contact if you'd like our care team to pray with you personally — it's never shown on the wall or shared with anyone.</p>
+            <p className="text-xs text-navy-700/50 mb-2">Optional — never shown on the wall or shared with anyone.</p>
           </div>
           <input
             type="email"
