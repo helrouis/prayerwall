@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import OnboardingModal from "@/components/OnboardingModal";
 
 export const metadata: Metadata = {
   title: "Prayer Wall — Bring Your Burdens",
@@ -11,6 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="min-h-screen bg-cream-100">
+        <OnboardingModal />
         <Navbar />
         <main>{children}</main>
         <footer className="mt-24 py-10 border-t border-cream-200 text-center text-sm text-navy-700/50">
