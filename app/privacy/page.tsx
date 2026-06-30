@@ -7,7 +7,7 @@ export default function PrivacyPage() {
       <div className="prose prose-sm text-navy-700/75 space-y-8">
 
         <p>
-          This prayer wall grew out of the CCF RunWithChrist community — a fellowship within CCF (Christian Community Fellowship) and its RunWithChrist sports ministry. Jason Cheng, a volunteer from within the community, stepped up to build and maintain it as an act of service. It is not an official CCF product — just the community finding a way to carry one another's burdens.
+          This prayer wall grew out of the CCF RunWithChrist community — a fellowship within CCF (Christ's Commission Fellowship) and its RunWithChrist sports ministry. Jason Cheng, a volunteer from within the community, stepped up to build and maintain it as an act of service. It is not an official CCF product — just the community finding a way to carry one another's burdens.
         </p>
 
         <div>
