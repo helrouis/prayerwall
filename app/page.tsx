@@ -13,7 +13,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
   const category = params.category || "All";
 
   let prayers: Awaited<ReturnType<typeof getApprovedPrayers>> = [];
-  let stats = { totalPrayers: 0, totalPrayed: 0, answeredCount: 0 };
+  let stats = { totalPrayers: 0, totalPrayed: 0, totalResponses: 0, answeredCount: 0 };
 
   try {
     [prayers, stats] = await Promise.all([
