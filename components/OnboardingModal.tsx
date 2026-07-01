@@ -17,13 +17,8 @@ const STEPS = [
   },
   {
     emoji: "✨",
-    heading: "Pray for others.",
-    body: "Tap 🙏 to quietly intercede for someone. Or open a prayer and leave a written prayer or a word of faith.",
-  },
-  {
-    emoji: "🎵",
-    heading: "Share a song or a reel.",
-    body: "Sometimes a song or a scripture video is exactly what someone needs. If something moves you, share it on a prayer request — it may be God's answer.",
+    heading: "Stand with others.",
+    body: "Tap 🙏 to quietly intercede for someone. Open a prayer to leave a written prayer or a word of faith. And if a song or a scripture video moves you — share it. Sometimes that is exactly how God answers.",
   },
 ];
 
