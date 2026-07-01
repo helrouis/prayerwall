@@ -1,5 +1,5 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import PrayerCard from "./PrayerCard";
 
 interface Prayer {
@@ -15,32 +15,20 @@ interface Prayer {
   responseCount?: number;
 }
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.06 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } },
-};
-
 export default function PrayerGrid({ prayers, category }: { prayers: Prayer[]; category: string }) {
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={category}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start"
-        variants={container}
-        initial="hidden"
-        animate="show"
-      >
-        {prayers.map((prayer, i) => (
-          <motion.div key={prayer.id} variants={item}>
-            <PrayerCard {...prayer} index={i} />
-          </motion.div>
-        ))}
-      </motion.div>
-    </AnimatePresence>
+    <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
+      {prayers.map((prayer, i) => (
+        <motion.div
+          key={`${category}-${prayer.id}`}
+          className="mb-4 break-inside-avoid"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut", delay: i * 0.06 }}
+        >
+          <PrayerCard {...prayer} index={i} />
+        </motion.div>
+      ))}
+    </div>
   );
 }
