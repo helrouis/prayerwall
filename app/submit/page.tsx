@@ -66,6 +66,8 @@ export default function SubmitPage() {
         <h1 className="font-serif text-3xl font-semibold text-navy-700 mb-3">Thank you.</h1>
         <p className="text-navy-700/60 text-lg">Our community will be praying with you.</p>
         <p className="text-sm text-navy-700/40 mt-4">Your prayer is being reviewed and will appear on the wall shortly.</p>
+        <p className="text-sm text-navy-700/50 mt-6">If the Lord answers, tell us — testimonies build faith for the whole community.</p>
+        <p className="text-sm text-navy-700/40 mt-2">While you wait, lift up someone else's prayer too — the Lord multiplies what you pour out.</p>
       </motion.div>
     );
   }
