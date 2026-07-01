@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     const [row] = await sql`
       INSERT INTO "Prayer" (id,title,body,"firstName","isAnonymous",email,phone,category,status,"createdAt","prayerCount","isAnswered")
       VALUES (gen_random_uuid(),${title.trim()},${prayer.trim()},
-        ${firstName.trim()},
+        ${firstName?.trim()||null},
         ${!!isAnonymous},${email?.trim()||null},${phone?.trim()||null},${category},'pending',NOW(),0,false)
       RETURNING id
     `;
