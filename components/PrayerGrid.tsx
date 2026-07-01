@@ -30,7 +30,7 @@ export default function PrayerGrid({ prayers, category }: { prayers: Prayer[]; c
     <AnimatePresence mode="wait">
       <motion.div
         key={category}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start"
         variants={container}
         initial="hidden"
         animate="show"
