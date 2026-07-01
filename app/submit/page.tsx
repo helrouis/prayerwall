@@ -119,7 +119,7 @@ export default function SubmitPage() {
             onChange={(e) => setForm({ ...form, body: e.target.value })}
             className="w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400 resize-none"
           />
-          <p className="text-xs text-navy-700/40 mt-1">If you're in crisis or need immediate help, please reach out to a trusted pastor or counselor directly.</p>
+          <p className="text-xs text-navy-700/40 mt-1">If you're in a crisis, please reach out to someone who can truly be there with you — a family member, a friend, or a crisis helpline.</p>
           <p className={`text-xs mt-0.5 text-right ${form.body.length > 4500 ? "text-amber-500" : "text-navy-700/40"}`}>{form.body.length}/5000</p>
         </div>
 
