@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
+import { motion } from "framer-motion";
 import { Turnstile } from "@marsidev/react-turnstile";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 
@@ -50,12 +51,22 @@ export default function SubmitPage() {
 
   if (submitted) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-24 text-center">
-        <div className="text-5xl mb-6">🙏</div>
+      <motion.div
+        className="max-w-xl mx-auto px-4 py-24 text-center"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
+        <motion.div
+          className="text-5xl mb-6"
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.15, duration: 0.4, ease: "easeOut" }}
+        >🙏</motion.div>
         <h1 className="font-serif text-3xl font-semibold text-navy-700 mb-3">Thank you.</h1>
         <p className="text-navy-700/60 text-lg">Our community will be praying with you.</p>
         <p className="text-sm text-navy-700/40 mt-4">Your prayer is being reviewed and will appear on the wall shortly.</p>
-      </div>
+      </motion.div>
     );
   }
 

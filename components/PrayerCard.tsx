@@ -62,8 +62,7 @@ export default function PrayerCard({
 
   return (
     <div
-      className="bg-white rounded-2xl border border-cream-200 p-5 hover:border-gold-400/40 transition-all duration-300 hover:shadow-[0_4px_24px_rgba(201,150,63,0.08)] fade-in-up"
-      style={{ animationDelay: `${index * 60}ms` }}
+      className="bg-white rounded-2xl border border-cream-200 p-5 hover:border-gold-400/40 transition-all duration-300 hover:shadow-[0_4px_24px_rgba(201,150,63,0.08)]"
     >
       {isAnswered && (
         <div className="flex items-center gap-1.5 mb-3 text-xs font-medium text-emerald-600 bg-emerald-50 rounded-full px-3 py-1 w-fit">

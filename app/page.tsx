@@ -1,5 +1,5 @@
 import Link from "next/link";
-import PrayerCard from "@/components/PrayerCard";
+import PrayerGrid from "@/components/PrayerGrid";
 import { getApprovedPrayers, getWallStats } from "@/lib/prayers";
 
 const CATEGORIES = ["All", "Health", "Family", "Relationships", "Financial", "School", "Work", "Thanksgiving", "Salvation", "Other"];
@@ -70,13 +70,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
       </section>
 
       <section className="max-w-6xl mx-auto px-4 pb-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {prayers.map((prayer, i) => (
-            <PrayerCard key={prayer.id} {...prayer} index={i} />
-          ))}
-        </div>
-
-        {prayers.length === 0 && (
+        {prayers.length > 0 ? (
+          <PrayerGrid prayers={prayers} category={category} />
+        ) : (
           <div className="text-center py-20 text-navy-700/40">
             <p className="font-serif text-xl">No prayers in this category yet.</p>
             <p className="text-sm mt-2">Be the first to share one.</p>
