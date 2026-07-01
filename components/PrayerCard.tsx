@@ -97,7 +97,7 @@ export default function PrayerCard({
             href={`/prayer/${id}`}
             className="text-xs text-gold-500 hover:text-gold-600 font-medium"
           >
-            {responseCount > 0 ? `${responseCount} response${responseCount > 1 ? "s" : ""} →` : "Read more →"}
+            {responseCount > 0 ? `${responseCount} ${responseCount === 1 ? "Word of Grace" : "Words of Grace"} →` : "Read more →"}
           </Link>
 
           <button

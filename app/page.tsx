@@ -41,14 +41,20 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
         >
           Submit Your Prayer
         </Link>
-        <div className="mt-8 flex items-center justify-center gap-8 text-center">
-          <div><p className="font-serif text-2xl font-semibold text-navy-700">{formatStat(stats.totalPrayers)}</p><p className="text-xs text-navy-700/50 mt-0.5">Prayers submitted</p></div>
+        <div className="mt-8 flex items-center justify-center gap-8 text-center flex-wrap">
+          <div><p className="font-serif text-2xl font-semibold text-navy-700">{formatStat(stats.totalPrayers)}</p><p className="text-xs text-navy-700/50 mt-0.5">Prayer Needs</p></div>
           <div className="w-px h-8 bg-cream-200" />
-          <div><p className="font-serif text-2xl font-semibold text-navy-700">{formatStat(stats.totalPrayed)}</p><p className="text-xs text-navy-700/50 mt-0.5">Times prayed</p></div>
+          <div><p className="font-serif text-2xl font-semibold text-navy-700">{formatStat(stats.totalPrayed)}</p><p className="text-xs text-navy-700/50 mt-0.5">Amens</p></div>
+          {stats.totalResponses > 0 && (
+            <>
+              <div className="w-px h-8 bg-cream-200" />
+              <div><p className="font-serif text-2xl font-semibold text-navy-700">{formatStat(stats.totalResponses)}</p><p className="text-xs text-navy-700/50 mt-0.5">Words of Grace</p></div>
+            </>
+          )}
           {stats.answeredCount > 0 && (
             <>
               <div className="w-px h-8 bg-cream-200" />
-              <div><p className="font-serif text-2xl font-semibold text-navy-700">{formatStat(stats.answeredCount)}</p><p className="text-xs text-navy-700/50 mt-0.5">Answered prayers</p></div>
+              <div><p className="font-serif text-2xl font-semibold text-navy-700">{formatStat(stats.answeredCount)}</p><p className="text-xs text-navy-700/50 mt-0.5">Answered Prayers</p></div>
             </>
           )}
         </div>

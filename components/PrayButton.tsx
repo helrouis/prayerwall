@@ -29,7 +29,7 @@ export default function PrayButton({ prayerId, initialCount }: { prayerId: strin
       </button>
       <p className="text-sm font-medium text-navy-700">
         {state === "pending" ? "Praying…" : (
-          <><span className="font-serif text-lg font-semibold">{count}</span> {count === 1 ? "person has" : "people have"} prayed</>
+          <><span className="font-serif text-lg font-semibold">{count}</span> {count === 1 ? "Amen" : "Amens"}</>
         )}
       </p>
       {state === "idle" && (
@@ -38,7 +38,7 @@ export default function PrayButton({ prayerId, initialCount }: { prayerId: strin
         </p>
       )}
       {state === "done" && (
-        <p className="text-xs text-emerald-600">Thank you for praying. 🙏</p>
+        <p className="text-xs text-emerald-600">Amen. Heaven hears it. 🙏</p>
       )}
     </div>
   );

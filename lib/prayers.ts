@@ -27,6 +27,7 @@ export type PublicResponse = {
 export type WallStats = {
   totalPrayers: number;
   totalPrayed: number;
+  totalResponses: number;
   answeredCount: number;
 };
 
@@ -76,17 +77,23 @@ export async function getApprovedPrayerById(id: string): Promise<PublicPrayer | 
 
 export async function getWallStats(): Promise<WallStats> {
   const sql = getDB();
-  const [row] = await sql<WallStats[]>`
-    SELECT
-      COUNT(*)::int AS "totalPrayers",
-      COALESCE(SUM("prayerCount"), 0)::int AS "totalPrayed",
-      COUNT(*) FILTER (WHERE "isAnswered" = true)::int AS "answeredCount"
-    FROM "Prayer"
-    WHERE status = 'approved'
-  `;
+  const [[row], [responseRow]] = await Promise.all([
+    sql<WallStats[]>`
+      SELECT
+        COUNT(*)::int AS "totalPrayers",
+        COALESCE(SUM("prayerCount"), 0)::int AS "totalPrayed",
+        COUNT(*) FILTER (WHERE "isAnswered" = true)::int AS "answeredCount"
+      FROM "Prayer"
+      WHERE status = 'approved'
+    `,
+    sql<{ count: number }[]>`
+      SELECT COUNT(*)::int AS count FROM "PrayerResponse" WHERE status = 'approved'
+    `,
+  ]);
   return {
     totalPrayers: row?.totalPrayers ?? 0,
     totalPrayed: row?.totalPrayed ?? 0,
+    totalResponses: responseRow?.count ?? 0,
     answeredCount: row?.answeredCount ?? 0,
   };
 }

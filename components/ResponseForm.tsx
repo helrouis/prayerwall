@@ -73,7 +73,7 @@ export default function ResponseForm({ prayerId }: { prayerId: string }) {
   if (done) {
     return (
       <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100 text-center">
-        <p className="text-sm font-medium text-emerald-700">Thank you — your response is being reviewed.</p>
+        <p className="text-sm font-medium text-emerald-700">Thank you — your message is being reviewed.</p>
       </div>
     );
   }
@@ -84,7 +84,7 @@ export default function ResponseForm({ prayerId }: { prayerId: string }) {
         onClick={() => setOpen(true)}
         className="text-sm font-medium text-gold-500 hover:text-gold-600 transition-colors"
       >
-        Respond with prayer or encouragement →
+        Share a Word of Grace →
       </button>
     );
   }
@@ -160,7 +160,7 @@ export default function ResponseForm({ prayerId }: { prayerId: string }) {
 
       {error && <p className="text-sm text-rose-500">{error}</p>}
 
-      <p className="text-xs text-navy-700/40">Your response will be reviewed before it appears.</p>
+      <p className="text-xs text-navy-700/40">Your message will be reviewed before it appears.</p>
 
       <div className="flex gap-2">
         <button
