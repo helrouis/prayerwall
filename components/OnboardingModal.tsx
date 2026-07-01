@@ -117,16 +117,9 @@ export default function OnboardingModal() {
               Every answered prayer becomes a testimony.
             </h2>
             <p className="text-navy-700/65 text-sm leading-relaxed mb-8">
-              Share the wall — let others see what God is doing.
+              Come and see what God is doing in this community.
             </p>
 
-            <button
-              onClick={handleShare}
-              disabled={sharing}
-              className="w-full border border-gold-400 text-gold-500 hover:bg-gold-50 font-medium py-3 rounded-full text-sm transition-colors mb-3"
-            >
-              {sharing ? "Sharing…" : "Share the Prayer Wall"}
-            </button>
             <button
               onClick={dismiss}
               className="w-full bg-gold-500 hover:bg-gold-600 text-white font-medium py-3 rounded-full text-sm transition-colors"
