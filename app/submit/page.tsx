@@ -82,11 +82,11 @@ export default function SubmitPage() {
           </label>
           {!form.isAnonymous && (
             <div>
-              <label className="block text-sm font-medium text-navy-700 mb-1.5">Display name <span className="text-rose-400">*</span></label>
+              <label className="block text-sm font-medium text-navy-700 mb-1.5">Name / Nickname / Alias <span className="text-rose-400">*</span></label>
               <input
                 type="text"
                 maxLength={100}
-                placeholder="Your name, nickname, or alias"
+                placeholder=""
                 value={form.firstName}
                 onChange={(e) => setForm({ ...form, firstName: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400"
@@ -108,10 +108,8 @@ export default function SubmitPage() {
             onChange={(e) => setForm({ ...form, body: e.target.value })}
             className="w-full px-4 py-2.5 rounded-xl border border-cream-200 bg-cream-50 text-navy-700 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400/30 focus:border-gold-400 resize-none"
           />
-          <div className="flex items-start justify-between mt-1 gap-4">
-            <p className="text-xs text-navy-700/40">If you're in crisis or need immediate help, please reach out to a trusted pastor or counselor directly.</p>
-            <p className={`text-xs shrink-0 ${form.body.length > 4500 ? "text-amber-500" : "text-navy-700/40"}`}>{form.body.length}/5000</p>
-          </div>
+          <p className="text-xs text-navy-700/40 mt-1">If you're in crisis or need immediate help, please reach out to a trusted pastor or counselor directly.</p>
+          <p className={`text-xs mt-0.5 text-right ${form.body.length > 4500 ? "text-amber-500" : "text-navy-700/40"}`}>{form.body.length}/5000</p>
         </div>
 
         {/* Title */}
@@ -153,8 +151,8 @@ export default function SubmitPage() {
         {/* Contact (optional) */}
         <div className="space-y-3">
           <div>
-            <label className="block text-sm font-medium text-navy-700 mb-0.5">Preferred contact for this request <span className="text-navy-700/40 font-normal">(optional)</span></label>
-            <p className="text-xs text-navy-700/50">Never shown on the wall or shared with anyone.</p>
+            <label className="block text-sm font-medium text-navy-700 mb-0.5">Contact</label>
+            <p className="text-xs text-navy-700/50">Optional — if a fellow volunteer feels led to pray with you in person, share how to reach you; if you're already part of our community, your name is often enough.</p>
           </div>
           <input
             type="email"
